@@ -29,19 +29,25 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Altar — A Minimalist Focus Ritual" },
+      {
+        name: "description",
+        content:
+          "Sacrifice a distraction. Focus for a set time. Receive a blessing. A quiet, cinematic focus ritual.",
+      },
+      { property: "og:title", content: "Altar — A Minimalist Focus Ritual" },
+      {
+        property: "og:description",
+        content: "Sacrifice a distraction. Focus. Receive a blessing.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap",
       },
     ],
   }),
