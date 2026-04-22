@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      rituals: {
+        Row: {
+          completed_at: string | null
+          completed_status: boolean
+          created_at: string
+          duration: number
+          id: string
+          sacrifice_text: string
+          user_email: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_status?: boolean
+          created_at?: string
+          duration: number
+          id?: string
+          sacrifice_text: string
+          user_email?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          completed_status?: boolean
+          created_at?: string
+          duration?: number
+          id?: string
+          sacrifice_text?: string
+          user_email?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
