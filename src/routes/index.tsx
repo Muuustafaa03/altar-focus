@@ -36,20 +36,20 @@ function AltarPage() {
     setError(null);
 
     try {
-      const { data, error: insertError } = await supabase
+      const ritualId = crypto.randomUUID();
+
+      const { error: insertError } = await supabase
         .from("rituals")
         .insert({
+          id: ritualId,
           sacrifice_text: text,
           duration,
           completed_status: false,
-        })
-        .select("id")
-        .single();
-
-      if (insertError || !data) throw insertError ?? new Error("No ritual id");
+        });
+      if (insertError) throw insertError;
 
       setActiveRitual({
-        id: data.id,
+        id: ritualId,
         sacrifice: text,
         duration,
         startedAt: Date.now(),
@@ -57,7 +57,11 @@ function AltarPage() {
 
       navigate({ to: "/focus" });
     } catch (err) {
-      console.error(err);
+      console.error("Failed to begin ritual", {
+        error: err,
+        sacrifice: text,
+        duration,
+      });
       setError("The altar could not receive your offering. Try again.");
       setSubmitting(false);
     }
