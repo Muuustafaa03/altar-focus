@@ -162,6 +162,27 @@
     background-color: oklch(0.88 0.12 215 / 0.3);
     color: var(--color-foreground);
   }
+
+  #sacrifice {
+    color-scheme: dark;
+  }
+
+  #sacrifice:-webkit-autofill,
+  #sacrifice:-webkit-autofill:hover,
+  #sacrifice:-webkit-autofill:focus,
+  #sacrifice:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-foreground) !important;
+    caret-color: oklch(0.88 0.12 215) !important;
+    border-bottom-color: oklch(0.88 0.12 215 / 0.6) !important;
+    -webkit-box-shadow: 0 0 0 1000px oklch(0.12 0.012 270) inset !important;
+    box-shadow: 0 0 0 1000px oklch(0.12 0.012 270) inset !important;
+    transition: background-color 99999s ease-in-out 0s;
+  }
+
+  #sacrifice:-moz-autofill {
+    box-shadow: 0 0 0 1000px oklch(0.12 0.012 270) inset !important;
+    -moz-text-fill-color: var(--color-foreground) !important;
+  }
 }
 
 @layer utilities {

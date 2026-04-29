@@ -22,6 +22,7 @@ export const Route = createFileRoute("/focus")({
 function FocusPage() {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [sacrifice, setSacrifice] = useState("");
   const [confirmAbandon, setConfirmAbandon] = useState(false);
   const ritualRef = useRef<ReturnType<typeof getActiveRitual>>(null);
@@ -36,11 +37,14 @@ function FocusPage() {
     setSacrifice(ritual.sacrifice);
 
     const totalMs = ritual.duration * 60 * 1000;
+    setRemainingSeconds(Math.ceil(totalMs / 1000));
 
     const tick = () => {
       const elapsed = Date.now() - ritual.startedAt;
       const p = Math.min(1, elapsed / totalMs);
       setProgress(p);
+      const remainingMs = Math.max(totalMs - elapsed, 0);
+      setRemainingSeconds(Math.ceil(remainingMs / 1000));
       if (p >= 1) {
         complete();
       }
@@ -84,6 +88,12 @@ function FocusPage() {
     navigate({ to: "/" });
   }
 
+  function formatRemaining(totalSeconds: number) {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  }
+
   return (
     <main
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
@@ -105,23 +115,32 @@ function FocusPage() {
         >
           Sacrificing · {sacrifice}
         </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.8 }}
+          transition={{ duration: 1.2, delay: 0.5 }}
+          className="font-mono text-sm tracking-[0.25em] text-foreground/90"
+        >
+          {formatRemaining(remainingSeconds)}
+        </motion.p>
       </motion.div>
 
-      {/* Abandon link */}
+      {/* Abandon control */}
       <div className="absolute bottom-6 left-0 right-0 flex justify-center">
         <AnimatePresence mode="wait">
           {!confirmAbandon ? (
             <motion.button
               key="abandon"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
+              animate={{ opacity: 0.9 }}
               exit={{ opacity: 0 }}
-              whileHover={{ opacity: 0.8 }}
+              whileHover={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
               onClick={() => setConfirmAbandon(true)}
-              className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground"
+              className="rounded-full border border-destructive/50 bg-destructive/10 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.25em] text-destructive/90 transition-colors hover:bg-destructive/20"
             >
-              abandon
+              Abandon Ritual
             </motion.button>
           ) : (
             <motion.div
@@ -129,20 +148,20 @@ function FocusPage() {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-4 font-mono text-[0.6rem] uppercase tracking-[0.3em]"
+              className="flex items-center gap-4 rounded-full border border-border/70 bg-background/80 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.22em]"
             >
-              <span className="text-muted-foreground">break the ritual?</span>
+              <span className="text-muted-foreground">Break the ritual?</span>
               <button
                 onClick={abandon}
-                className="text-destructive transition-colors hover:text-foreground"
+                className="text-destructive transition-colors hover:text-destructive/80"
               >
-                yes
+                Yes
               </button>
               <button
                 onClick={() => setConfirmAbandon(false)}
                 className="text-muted-foreground transition-colors hover:text-foreground"
               >
-                no
+                No
               </button>
             </motion.div>
           )}
