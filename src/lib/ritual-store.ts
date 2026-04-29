@@ -1,5 +1,5 @@
-// Ephemeral in-memory + sessionStorage handoff for the active ritual.
-// Avoids relying on router state across full page transitions.
+// Ephemeral in-memory ritual state.
+// Intentionally resets on full page refresh.
 
 export type ActiveRitual = {
   id: string;
@@ -8,30 +8,21 @@ export type ActiveRitual = {
   startedAt: number; // epoch ms
 };
 
-const KEY = "altar:active-ritual";
+let activeRitual: ActiveRitual | null = null;
 
 export function setActiveRitual(r: ActiveRitual) {
-  if (typeof window === "undefined") return;
-  sessionStorage.setItem(KEY, JSON.stringify(r));
+  activeRitual = r;
 }
 
 export function getActiveRitual(): ActiveRitual | null {
-  if (typeof window === "undefined") return null;
-  const raw = sessionStorage.getItem(KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as ActiveRitual;
-  } catch {
-    return null;
-  }
+  return activeRitual;
 }
 
 export function clearActiveRitual() {
-  if (typeof window === "undefined") return;
-  sessionStorage.removeItem(KEY);
+  activeRitual = null;
 }
 
-const COMPLETED_KEY = "altar:last-completed";
+let lastCompleted: CompletedRitual | null = null;
 
 export type CompletedRitual = {
   sacrifice: string;
@@ -39,17 +30,9 @@ export type CompletedRitual = {
 };
 
 export function setLastCompleted(r: CompletedRitual) {
-  if (typeof window === "undefined") return;
-  sessionStorage.setItem(COMPLETED_KEY, JSON.stringify(r));
+  lastCompleted = r;
 }
 
 export function getLastCompleted(): CompletedRitual | null {
-  if (typeof window === "undefined") return null;
-  const raw = sessionStorage.getItem(COMPLETED_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as CompletedRitual;
-  } catch {
-    return null;
-  }
+  return lastCompleted;
 }

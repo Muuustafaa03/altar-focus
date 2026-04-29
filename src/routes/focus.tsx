@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Orb } from "@/components/Orb";
-import { supabase } from "@/integrations/supabase/client";
 import {
   clearActiveRitual,
   getActiveRitual,
@@ -64,22 +63,10 @@ function FocusPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function complete() {
+  function complete() {
     const ritual = ritualRef.current;
     if (!ritual) return;
     ritualRef.current = null; // guard against double-fire
-
-    try {
-      await supabase
-        .from("rituals")
-        .update({
-          completed_status: true,
-          completed_at: new Date().toISOString(),
-        })
-        .eq("id", ritual.id);
-    } catch (e) {
-      console.error(e);
-    }
 
     setLastCompleted({
       sacrifice: ritual.sacrifice,
@@ -89,19 +76,10 @@ function FocusPage() {
     navigate({ to: "/blessing" });
   }
 
-  async function abandon() {
+  function abandon() {
     const ritual = ritualRef.current;
     ritualRef.current = null;
-    if (ritual) {
-      try {
-        await supabase
-          .from("rituals")
-          .update({ completed_status: false })
-          .eq("id", ritual.id);
-      } catch (e) {
-        console.error(e);
-      }
-    }
+    if (!ritual) return;
     clearActiveRitual();
     navigate({ to: "/" });
   }

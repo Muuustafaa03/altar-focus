@@ -2,19 +2,7 @@
 # Altar — A Minimalist Focus Ritual
 
 A dark, cinematic web app where users "sacrifice" a distraction for a set time and complete a focus ritual at a glowing orb.
-
-## Database (Supabase / Lovable Cloud)
-
-Table: `rituals` (anonymous — no auth required, public insert allowed)
-- `id` — uuid, primary key
-- `user_email` — text, nullable (optional, for future use)
-- `sacrifice_text` — text, required
-- `duration` — integer (minutes: 15, 30, or 60)
-- `completed_status` — boolean, default false
-- `created_at` — timestamptz, default now()
-- `completed_at` — timestamptz, nullable
-
-RLS: enabled, anonymous insert + update on own row id allowed.
+The experience is intentionally frontend-only with ephemeral in-memory state.
 
 ## Screens & Flow
 
@@ -25,14 +13,13 @@ RLS: enabled, anonymous insert + update on own row id allowed.
 - Minimal text input — borderless, thin underline that glows cyan on focus.
 - Three duration chips: **15 · 30 · 60** (minutes). Selected chip gets a soft cyan ring.
 - Single CTA: **Begin Ritual** — ghost button with subtle purple glow on hover.
-- Ritual row inserted into Supabase on Begin.
 
 ### 2. Focus State — `/focus`
 - Pure black, immersive. No nav, no chrome.
 - Centered glowing **orb** (radial gradient, cyan core → purple bleed) that breathes via Framer Motion (4s scale + opacity pulse loop).
 - A thin **progress ring** draws around the orb as time elapses (no numerical countdown).
 - Below the orb, in faded uppercase mono: *"Sacrificing [sacrifice_text]"*.
-- Tiny "abandon" link in the bottom corner — confirms before exiting; marks ritual `completed_status=false`.
+- Tiny "abandon" link in the bottom corner — confirms before exiting and resets the ritual.
 - Page warns on tab close / back navigation.
 
 ### 3. Blessing — `/blessing`
@@ -41,7 +28,7 @@ RLS: enabled, anonymous insert + update on own row id allowed.
 - A randomly chosen **affirmation** from a curated set (10–15 lines, calm/poetic tone).
 - Duration completed shown subtly underneath.
 - Two actions: **Begin Another** · **Return to Altar**.
-- Ritual updated to `completed_status=true`, `completed_at=now()`.
+- Completing a ritual updates local in-memory completion state only.
 
 ## Aesthetic System
 - **Palette:** background `#06070A`, surface `#0C0E12`, text `#E8E8EC`, muted `#6B6E78`, accent cyan `#7CE7FF`, accent purple `#B794F4`. All defined as semantic tokens in `index.css`.
@@ -56,7 +43,6 @@ RLS: enabled, anonymous insert + update on own row id allowed.
 ## Tech
 - TanStack Start routes: `index.tsx`, `focus.tsx`, `blessing.tsx`.
 - Framer Motion for orb pulse, ring progress, and transitions.
-- Lovable Cloud (Supabase) for the `rituals` table — anonymous writes.
 - Affirmations stored as a static array in the codebase (no extra table needed).
 
 Press **Implement plan** to build it.

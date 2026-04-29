@@ -3,16 +3,15 @@ A minimalist focus ritual app for intentional deep work sessions.
 
 🌐 Live App: `https://altar-focus.vercel.app/`  
 🚀 Local App: `http://localhost:8080/`  
-🧱 Stack: TanStack Start + React + TypeScript + Tailwind CSS + Supabase
+🧱 Stack: TanStack Start + React + TypeScript + Tailwind CSS
 
 ---
 
 ## 🛠️ What it solves
 - **Ritualized Session Start:** Turn “I should focus” into a concrete commitment by naming what you will sacrifice.
 - **Timed Focus Flow:** Run a 15, 30, or 60-minute ritual session with visual progress.
-- **Session Persistence:** Keeps active ritual state in `sessionStorage` so accidental refreshes are less disruptive.
+- **Ephemeral Sessions:** Timer state is intentionally reset on refresh for a clean restart.
 - **Completion Reflection:** Ends with a blessing/affirmation screen to reinforce consistency.
-- **Simple Ritual Logging:** Stores ritual records in Supabase for persistence and future analytics.
 
 ---
 
@@ -33,47 +32,22 @@ cd altar-focus
 npm install
 ```
 
-### 2) Configure environment variables
-Create a `.env` file in project root:
-
-```env
-SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
-SUPABASE_PUBLISHABLE_KEY="YOUR_SUPABASE_ANON_KEY"
-VITE_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
-VITE_SUPABASE_PUBLISHABLE_KEY="YOUR_SUPABASE_ANON_KEY"
-VITE_SUPABASE_PROJECT_ID="YOUR_PROJECT_REF"
-```
-
-### 3) Run development server
+### 2) Run development server
 ```bash
 npm run dev
 ```
 
-### 4) Build for production
+### 3) Build for production
 ```bash
 npm run build
 ```
 
 ---
 
-## 🗄️ Supabase schema notes
-The app expects a `public.rituals` table with fields like:
-- `id` (UUID, primary key)
-- `sacrifice_text` (TEXT)
-- `duration` (INTEGER)
-- `completed_status` (BOOLEAN)
-- `created_at` / `completed_at` (TIMESTAMPTZ)
-
-It also expects Row Level Security policies that allow:
-- **INSERT** for anon/authenticated users (begin ritual)
-- **UPDATE** for anon/authenticated users (complete or abandon ritual)
-
----
-
 ## ⚠️ Important behavior notes
-- The app uses browser `sessionStorage` for active and recently completed ritual state.
-- Closing the tab or opening a new browser session may clear ritual context.
-- Supabase failures are logged to the browser console for debugging.
+- The app uses browser `sessionStorage` for temporary in-session ritual state.
+- Refreshing during a ritual intentionally resets the flow.
+- No environment variables or backend services are required.
 
 ---
 
