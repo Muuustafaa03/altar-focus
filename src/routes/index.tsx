@@ -57,12 +57,54 @@ function AltarPage() {
 
       navigate({ to: "/focus" });
     } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message: unknown }).message)
+            : String(err);
+      const details =
+        typeof err === "object" && err !== null && "details" in err
+          ? String((err as { details: unknown }).details ?? "")
+          : "";
+      const code =
+        typeof err === "object" && err !== null && "code" in err
+          ? String((err as { code: unknown }).code ?? "")
+          : "";
       console.error("Failed to begin ritual", {
         error: err,
+        message,
+        details,
+        code,
         sacrifice: text,
         duration,
       });
-      setError("The altar could not receive your offering. Try again.");
+
+      // Allow local ritual flow when Supabase is not configured in development.
+      const isSupabaseUnavailable =
+        message.includes("Missing Supabase environment variables") ||
+        message.includes("Failed to fetch") ||
+        details.includes("Failed to fetch") ||
+        details.includes("ERR_NAME_NOT_RESOLVED");
+
+      if (
+        import.meta.env.DEV &&
+        isSupabaseUnavailable
+      ) {
+        const ritualId = crypto.randomUUID();
+        setActiveRitual({
+          id: ritualId,
+          sacrifice: text,
+          duration,
+          startedAt: Date.now(),
+        });
+        navigate({ to: "/focus" });
+        return;
+      }
+
+      setError(
+        "The altar could not receive your offering. Check console logs for details, then try again.",
+      );
       setSubmitting(false);
     }
   }
