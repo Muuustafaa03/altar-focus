@@ -1,6 +1,7 @@
 # 🔮 Altar Focus Ritual
 A minimalist focus ritual app for intentional deep work sessions.
 
+🌐 Live App: `https://altar-focus.vercel.app/`  
 🚀 Local App: `http://localhost:8080/`  
 🧱 Stack: TanStack Start + React + TypeScript + Tailwind CSS + Supabase
 
